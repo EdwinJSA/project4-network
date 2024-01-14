@@ -1,0 +1,63 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    {% if user.is_authenticated %}
+    <form action="newPost" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div>
+            <button type="submit">Add</button>
+        </div>
+    </form> 
+    {% endif %}
+
+    {% for i in post_page %}
+        <div>
+            <p><a href="{% url 'profile' user_id=i.user.id %}">@{{ i.user }}</a></p>
+            <p id="content_{{ post.id }}">{{ i.content }}</p>
+            <span>{{ i.date }}</span>
+            {% if user.is_authenticated %}
+                {% if user == i.user %}
+                    <div>
+                        <button data-toggle="modal" data-target="#modal_edit_post_{{ i.id }}">Edit</button>
+                    </div>
+                      <div class="modal fade" id="modal_edit_post_{{ i.id }}" tabindex="-1" aria-labelledby="#modal_edit_post_{{ i.id }}_label" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Edit Content</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea id="textarea_{{ i.id }}" class="form-control" name="content"> {{ i.content }}</textarea>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" onclick="saveChanges({{ i.id }})">Save changes</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                {% endif %}
+            {% endif %}
+            <div>
+                <button>Like</button>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if post_page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ post_page.previous_page_number }}">Previous</a></li>
+            {% endif %}
+            {% if post_page.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ post_page.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+      </nav>
+
+{% endblock %}
