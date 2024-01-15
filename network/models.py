@@ -22,3 +22,13 @@ class Follow(models.Model):
     
     def __str__(self):
         return f"{self.user} followed: {self.follower}"
+    
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(newPost, on_delete=models.CASCADE)
+
+    
+    def __str__(self):
+        return f"{self.user} liked: {self.post}"
+    

@@ -14,7 +14,7 @@
     {% for i in post_page %}
         <div>
             <p><a href="{% url 'profile' user_id=i.user.id %}">@{{ i.user }}</a></p>
-            <p id="content_{{ post.id }}">{{ i.content }}</p>
+            <p id="content_{{ i.id }}">{{ i.content }}</p>
             <span>{{ i.date }}</span>
             {% if user.is_authenticated %}
                 {% if user == i.user %}
@@ -40,11 +40,14 @@
                           </div>
                         </div>
                       </div>
+                {% else %}
+                  {% if i.id in youLiked %}
+                    <button class="btn btn-info fa fa-thumbs-down" onclick="Like({{ i.id }}, {{ youLiked }})" id="{{i.id}}">Unlike</button>
+                  {% else %}
+                    <button class="btn btn-info fa fa-thumbs-up" onclick="Like({{ i.id }}, {{ youLiked }})" id="{{i.id}}">Like</button>
+                  {% endif %}
                 {% endif %}
             {% endif %}
-            <div>
-                <button>Like</button>
-            </div>
         </div>
     {% endfor %}
 
