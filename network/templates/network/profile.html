@@ -25,16 +25,47 @@
         {% endif %}
     </div>
 
-    {% for i in post_page %}
-        <div>
-            <p><a href="{% url 'profile' user_id=i.user.id %}">@{{ i.user }}</a></p>
-            <p>{{ i.content }}</p>
-            <span>{{ i.date }}</span>
-            <div>
-                <button>Like</button>
-            </div>
+    <div id="contenido_post" class="col-12">
+        {% for i in post_page %}
+          <div id="post_card" class="col-10">
+              <p><a href="{% url 'profile' user_id=i.user.id %}">@{{ i.user }}</a></p>
+              <p id="content_{{ i.id }}">{{ i.content }}</p>
+              <span>{{ i.date }}</span>
+              {% if user.is_authenticated %}
+                  {% if user == i.user %}
+                      <div>
+                          <button data-toggle="modal" data-target="#modal_edit_post_{{ i.id }}">Edit</button>
+                      </div>
+                        <div class="modal fade" id="modal_edit_post_{{ i.id }}" tabindex="-1" aria-labelledby="#modal_edit_post_{{ i.id }}_label" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Content</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                  <textarea id="textarea_{{ i.id }}" class="form-control" name="content"> {{ i.content }}</textarea>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" onclick="saveChanges({{ i.id }})">Save changes</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                  {% else %}
+                    {% if i.id in youLiked %}
+                      <button class="btn btn-info fa fa-thumbs-down" onclick="Like({{ i.id }}, {{ youLiked }})" id="{{i.id}}">Unlike</button>
+                    {% else %}
+                      <button class="btn btn-info fa fa-thumbs-up" onclick="Like({{ i.id }}, {{ youLiked }})" id="{{i.id}}">Like</button>
+                    {% endif %}
+                  {% endif %}
+              {% endif %}
         </div>
-    {% endfor %}
+      {% endfor %}
+      </div>
 
 
     <nav aria-label="Page navigation example">

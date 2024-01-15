@@ -2,7 +2,7 @@ function Like(id, youLiked){
     const button = document.getElementById(`${id}`)
     button.classList.remove('fa-thumbs-up')
     button.classList.remove('fa-thumbs-down')
-
+    console.log(youLiked)
     if(youLiked.includes(id)){
         var liked = true
     } else {
@@ -16,7 +16,10 @@ function Like(id, youLiked){
             return response.text()
         }).then(result => { // ejecuta
             console.log(result);
-            //button.classList.add('fa-thumbs-up')
+            button.classList.add('fa-thumbs-up')
+            button.innerText = "Like"
+            youLiked.splice(youLiked.indexOf(id), 1)
+            button.onclick = function(){Like(id, youLiked)}
         })
     } else {
         console.log(id + "Entro al ELSE")
@@ -24,6 +27,9 @@ function Like(id, youLiked){
         .then(response=>response.json())
         .then(result => {
             button.classList.add('fa-thumbs-down')
+            button.innerText = "Dislike"
+            youLiked.push(id)
+            button.onclick = function(){Like(id, youLiked)}
         }) // haber ejecutalo
     }
     liked = !liked

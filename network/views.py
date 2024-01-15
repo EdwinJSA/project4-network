@@ -197,28 +197,31 @@ def edit_post(request, post_id):
         return JsonResponse({"message": "Post edited successfully.", "data":data["content"]})
 
 def remove_like(request, post_id):
-    print(post_id)
-       
-    print("1") #no printeo nada? no no entra nada en esta parte, es decir solo ha
-    post = newPost.objects.get(id=post_id)
-    print("2")
-    user = User.objects.get(id=request.user.id)
-    print("3")
-    like = Like.objects.get(post=post, user=user) #aca esta el error hay 4 Likes, so tienes que eliminar los otros 3, entra a tableplus
-    #no se puede borrar desde tableplus,  conom toeo  que no ahberajajajajaj
-    # Bro te llevaste la tabla jajajajajaj  lose pense que el django la iba a crear wtf, ,creala denuelta xdjajajajaja, Django es niña
-    print("4")
-    like.delete() # ejecuta
-    print("5") # ejecuta
-    return JsonResponse({"message": "Post unliked successfully."})
+    comprobar = Like.objects.filter(post=post_id, user=request.user.id)
+    if len(comprobar) > 0: 
+        post = newPost.objects.get(id=post_id)
+        user = User.objects.get(id=request.user.id)
+        like = Like.objects.get(post=post, user=user)
+        like.delete() # ejecuta
+        return JsonResponse({"message": "Post unliked successfully."})
+    else:
+        return JsonResponse({"message": "NEL."})
 
 def add_like(request, post_id):
     try:
-        post = newPost.objects.get(id=post_id)
-        user = User.objects.get(id=request.user.id)
-        like = Like(post=post, user=user)
-        like.save()
-        return JsonResponse({"message": "Post liked successfully."})
+        # se esta creando multiples entradas
+        #la voy a crear, me ayudas si en caso que la cague, solo es ver si ya existe en Like
+        comprobar = Like.objects.filter(post=post_id, user=request.user.id)
+        if len(comprobar) == 0:
+            post = newPost.objects.get(id=post_id)
+            user = User.objects.get(id=request.user.id)
+            like = Like(post=post, user=user)
+            like.save()
+            return JsonResponse({"message": "Post liked successfully."})
+        else:
+            return JsonResponse({"message": "Post already liked."})
+        # y ahora borra el registro de like repetido que esta ahorita
+        
     except Exception as e:
         print(e)
         return JsonResponse({"error": "An error occurred."}, status=500)

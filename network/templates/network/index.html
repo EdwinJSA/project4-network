@@ -11,8 +11,9 @@
     </form> 
     {% endif %}
 
-    {% for i in post_page %}
-        <div>
+    <div id="contenido_post" class="col-12">
+      {% for i in post_page %}
+        <div id="post_card" class="col-10">
             <p><a href="{% url 'profile' user_id=i.user.id %}">@{{ i.user }}</a></p>
             <p id="content_{{ i.id }}">{{ i.content }}</p>
             <span>{{ i.date }}</span>
@@ -48,8 +49,9 @@
                   {% endif %}
                 {% endif %}
             {% endif %}
-        </div>
+      </div>
     {% endfor %}
+    </div>
 
 
     <nav aria-label="Page navigation example">
